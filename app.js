@@ -1,26 +1,17 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const morgan = require('morgan');
+const port = process.env.PORT || 3000;
+const index = require('./routes');
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use(morgan('short'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(morgan('short'));
+app.use(index);
 
-app.get('/', (req, res) => {
-    res.end('index');
-})
-app.post('/', (req, res) => {
-    let body = '';
-    req.on('data',(data) => {
-        body += data;
-    })
-req.on('end', () => {
-    console.log(body);
-    console.log(typeof body);
-    res.end('index');
-})
-
-    
-})
-
-app.listen(3000);
+app.listen(port);
